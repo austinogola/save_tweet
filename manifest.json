@@ -1,0 +1,17 @@
+{
+    "name": "Save Tweet to Photos",
+    "description": "Save Tweets to Photos",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions":["contextMenus","tabs","storage"],
+    "background": {
+    "service_worker": "background.js"
+  },
+    "action":{
+        "default_popup":"popup.html"
+    },
+    "content_scripts":[{
+      "matches":["<all_urls>"],
+      "js":["script.js"]
+      }]
+  }

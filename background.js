@@ -15,11 +15,18 @@ chrome.runtime.onInstalled.addListener(()=>{
     })
 })
 
-chrome.contextMenus.onClicked.addListener((info,tab)=>{
-  chrome.tabs.create({
-      url: 'https://www.google.com/'
-    });
+chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
+  const url=await getCurrentTab()
+  // chrome.tabs.create({
+  //     url: url
+  //   });
+  chrome.storage.local.set({test: 'test_value'}, function() {
+    console.log('Value is set to ');
+  });
 })
+
+
+
 
 async function getCurrentTab() {
   let queryOptions = { active: true, lastFocusedWindow: true };
@@ -30,6 +37,13 @@ async function getCurrentTab() {
 }
 
 const url=getCurrentTab()
+
+
+
+
+
+
+
 // const value='valll'
 // chrome.storage.local.set({key: value}, function() {
 //   console.log('Value is set to ' + value);
@@ -41,7 +55,18 @@ const url=getCurrentTab()
 chrome.storage.local.set({url:url},async()=>{
   const link= await getCurrentTab()
   console.log(`url has been set to ${link}`);
+  // chrome.storage.
 })
+
+// chrome.tabs.getSelected(null, function(tab) {
+//   chrome.tabs.sendMessage(tab.id, { message: "TEST" });
+// });
+
+chrome.runtime.sendMessage({text: "hey"}, function(response) {
+    console.log("Response: ", response);
+});
+
+
 
 // chrome.tabs.getSelected(null, function(tab) {
 //   chrome.tabs.sendMessage(tab.id, { message: "TEST" });

@@ -32,7 +32,8 @@ app.post("/tweet",async(req,res)=>{
 
 
 app.use('/screenshot',require('./routes/screenshot'))
-app.use('/getTweet',require('./routes/getTweet'))
+app.use('/makeTweet',require('./routes/makeTweet'))
+app.use('/render',require('./routes/render'))
 
 
 app.listen(5000,()=>{

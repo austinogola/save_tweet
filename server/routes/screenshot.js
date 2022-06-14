@@ -10,6 +10,9 @@ router.post('/',async(req,res)=>{
 
       let relvHtml='';
 
+      const name=String(twtUrl.split('/').slice(-1))
+      console.log(name,typeof name);
+
       //Get embedding code
       try {
         fetch(`https://publish.twitter.com/oembed?url=${twtUrl}`,{
@@ -17,40 +20,41 @@ router.post('/',async(req,res)=>{
         }).then(async response=>{
           const resp=await response.json()
           relvHtml=await resp.html
+          console.log('Html code retrived')
 
-          console.log('Image sent');
-          try {
-            fetch("http://localhost:5000/getTweet",{
-              method:"POST",
-              headers:{
-                "Content-Type":"application/json",
-              },
-              body:JSON.stringify({
-                html:relvHtml
-              })
-            }).then(async response=>{
-              
+          fetch("http://localhost:5000/makeTweet",{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json",
+            },
+            body:JSON.stringify({
+              html:relvHtml,
+              name:name
             })
-          }
-          catch (e) {
-            console.log(e.message);
-            res.send(e.message)
-          }
+          }).then(async response=>{
+              const resp=await response.json()
+              res.json(resp)
+          })
         })
+      }catch (e) {
+        res.status(401).send(e.message)
       }
-      catch (e) {
-        console.log(e.message);
-        res.send(e.message)
-      }
-
-      //Req to render html
-      //
-
-
     } catch (e) {
-      console.log(e.message);
       res.status(401).send(e.message)
     }
+})
+
+
+router.post('/shot',async(req,res)=>{
+  const {name}=req.body
+  console.log(name);
+  const browser=await puppeteer.launch({headless:true})
+  const page=await browser.newPage()
+  await page.goto(`http://localhost:5000/render/${name}`)
+  await page.screenshot({path:`${name}.png`})
+  await browser.close()
+  console.log('Screenshot taken');
+  res.json({"Status":'Screenshot done'})
 })
 
 
